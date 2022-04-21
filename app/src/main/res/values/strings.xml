@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">android school</string>
+    <string name="start_app_name_title"><b>MoviePlanner</b></string>
+    <string name="start_activity_touch">Нажмите, чтобы начать</string>
+    <string name="fragment_home">Home Fragment</string>
+    <string name="fragment_search">Search Fragment</string>
+    <string name="fragment_calendar">Calendar Fragment</string>
+    <string name="home_button">Home button</string>
+    <string name="search_button">Search button</string>
+    <string name="calendar_button">Calendar button</string>
+    <string name="poster_description">poster</string>
+    <string name="add_to_calendar_button">Add to calendar button</string>
+</resources>
