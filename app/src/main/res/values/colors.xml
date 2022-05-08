@@ -8,6 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="start_background">#383838</color>
-    <color name="buttons_panel_background">#B0B0B0</color>
-    <color name="movie_background">#DF272424</color>
+    <color name="buttons_panel_background">#C4C4C4</color>
+    <color name="background">#585858</color>
 </resources>
