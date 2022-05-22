@@ -24,7 +24,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         super.onViewCreated(view, savedInstanceState)
         findViews(view)
         emptyLayout.visibility = View.VISIBLE
-//        moviesLayout.visibility = View.VISIBLE
+
         view.findViewById<SearchView>(R.id.searchView)
             .setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(p0: String?): Boolean {
@@ -32,7 +32,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
 
                 override fun onQueryTextSubmit(p0: String?): Boolean {
-                    p0?.let { getMovies(it) }
+                    p0?.let { viewModel.searchMovies(it) }
                     return false
                 }
             })
@@ -60,26 +60,5 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 moviesLayout.visibility = View.VISIBLE
             }
         }
-    }
-
-    private fun getMovies(query: String) {
-        NetworkService.getInstance()
-            ?.getRetrofitServiceApi()
-            ?.getMovies(query)
-            ?.enqueue(object : Callback<MoviesList> {
-                override fun onResponse(
-                    call: Call<MoviesList>,
-                    response: Response<MoviesList>
-                ) {
-                    response.body()?.let {
-                        print(it.docs)
-                        viewModel.setMovies(it.docs)
-                    }
-                }
-
-                override fun onFailure(call: Call<MoviesList>, t: Throwable) {
-                    viewModel.setMovies(emptyList())
-                }
-            })
     }
 }
