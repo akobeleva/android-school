@@ -42,7 +42,7 @@ class MoviesRecyclerAdapter(private val fragmentActivity: FragmentActivity) :
     }
 
     private fun clickListener(movie: Movie) {
-        val movieFragment = MovieFragment.newInstance(movie)
+        val movieFragment = MovieFragment.newInstance(movie.id)
         fragmentActivity.supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragmentContainer, movieFragment)
