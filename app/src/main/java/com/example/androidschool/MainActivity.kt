@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentContainer, MovieFragment())
+                .add(R.id.fragmentContainer, HomeFragment())
                 .commit()
         }
 

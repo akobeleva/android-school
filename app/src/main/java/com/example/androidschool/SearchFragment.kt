@@ -8,11 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.androidschool.model.MoviesList
-import com.example.androidschool.network.NetworkService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
     private val viewModel: MoviesViewModel by viewModels()
@@ -38,7 +33,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             })
         val recyclerView = view.findViewById<RecyclerView>(R.id.moviesRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        moviesRecyclerAdapter = MoviesRecyclerAdapter()
+        moviesRecyclerAdapter = MoviesRecyclerAdapter(requireActivity())
         recyclerView.adapter = moviesRecyclerAdapter
 
         subscribeToViewModel()
