@@ -1,4 +1,4 @@
-package com.example.androidschool.model
+package com.example.androidschool.model.dto
 
 class Movie(
     var id: Long,

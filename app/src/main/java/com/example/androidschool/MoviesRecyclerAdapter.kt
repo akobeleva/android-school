@@ -9,7 +9,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.androidschool.model.Movie
+import com.example.androidschool.model.dto.Movie
 
 class MoviesRecyclerAdapter(private val fragmentActivity: FragmentActivity) :
     RecyclerView.Adapter<MoviesRecyclerAdapter.MovieViewHolder>() {

@@ -1,11 +1,23 @@
 package com.example.androidschool
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.androidschool.model.Movie
+import com.example.androidschool.db.Database
+import com.example.androidschool.db.MovieDao
+import com.example.androidschool.model.dto.Movie
+import com.example.androidschool.model.dto.MoviesList
+import com.example.androidschool.model.dto.Poster
+import com.example.androidschool.model.dto.Rating
+import com.example.androidschool.model.entity.MovieEntity
+import com.example.androidschool.network.NetworkService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class MoviesViewModel : ViewModel() {
+class MoviesViewModel(application: Application) : AndroidViewModel(application) {
     var movies: MutableLiveData<List<Movie>> = MutableLiveData()
+    private var movieDao: MovieDao = Database.getDatabase(application.applicationContext).movieDao()
 
     fun setMovies(moviesList: List<Movie>) {
         movies.value = moviesList
@@ -82,6 +94,8 @@ class MoviesViewModel : ViewModel() {
         movie.name,
         movie.year,
         movie.description,
+        movie.genres,
+        movie.countries,
         movie.rating?.kp,
         movie.poster?.url
     )
@@ -91,8 +105,8 @@ class MoviesViewModel : ViewModel() {
         entity.name,
         entity.year,
         entity.description,
-        emptyList(),
-        emptyList(),
+        entity.genres,
+        entity.countries,
         entity.rating?.let { Rating(it) },
         entity.poster?.let { Poster(it) }
     )

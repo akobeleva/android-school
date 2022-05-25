@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.example.androidschool.model.Movie
+import com.example.androidschool.model.dto.Movie
 import com.example.androidschool.network.NetworkService
 import retrofit2.Call
 import retrofit2.Callback

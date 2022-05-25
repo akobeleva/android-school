@@ -1,7 +1,7 @@
 package com.example.androidschool.network
 
-import com.example.androidschool.model.Movie
-import com.example.androidschool.model.MoviesList
+import com.example.androidschool.model.dto.Movie
+import com.example.androidschool.model.dto.MoviesList
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
