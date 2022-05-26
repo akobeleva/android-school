@@ -2,6 +2,7 @@ package com.example.androidschool
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -43,6 +44,15 @@ class MovieFragment : Fragment(R.layout.movie_layout) {
                     t.printStackTrace()
                 }
             })
+        val addToCalendarButton = view.findViewById<ImageButton>(R.id.addToCalendarButton)
+        addToCalendarButton.setOnClickListener {
+            val addToCalendarFragment = AddToCalendarFragment()
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, addToCalendarFragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun showMovie(view: View, movie: Movie) {
