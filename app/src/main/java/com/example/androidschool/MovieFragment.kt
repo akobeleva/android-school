@@ -53,6 +53,10 @@ class MovieFragment : Fragment(R.layout.movie_layout) {
                 .addToBackStack(null)
                 .commit()
         }
+        val backPressButton = view.findViewById<ImageView>(R.id.backPressButton)
+        backPressButton.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
     }
 
     private fun showMovie(view: View, movie: Movie) {
