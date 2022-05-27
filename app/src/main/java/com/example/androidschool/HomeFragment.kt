@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,9 +50,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun subscribeToViewModel() {
         viewModel.movies.observe(viewLifecycleOwner) {
-            moviesRecyclerAdapter.reload(it)
-            setTitle()
-            viewModel.reloadDatabaseMovies()
+            if (it.isEmpty()) {
+                val text = "Проверьте соединение и попробуйте еще раз"
+                val duration = Toast.LENGTH_LONG
+
+                val toast = Toast.makeText(context, text, duration)
+                toast.show()
+            } else {
+                moviesRecyclerAdapter.reload(it)
+                setTitle()
+                viewModel.reloadDatabaseMovies()
+            }
         }
     }
 }

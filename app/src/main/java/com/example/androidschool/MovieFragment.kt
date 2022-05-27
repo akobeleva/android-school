@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.androidschool.model.dto.Movie
@@ -15,7 +16,7 @@ import retrofit2.Response
 
 
 class MovieFragment : Fragment(R.layout.movie_layout) {
-
+    private var  movie: Movie? = null
 
     companion object {
         fun newInstance(movieId: Long): MovieFragment =
@@ -34,16 +35,22 @@ class MovieFragment : Fragment(R.layout.movie_layout) {
             ?.getMovie(movieId)
             ?.enqueue(object : Callback<Movie> {
                 override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
-                    val movie: Movie? = response.body()
-                    if (movie != null) {
-                        showMovie(view, movie)
-                    }
+                    movie = response.body()
                 }
 
                 override fun onFailure(call: Call<Movie>, t: Throwable) {
                     t.printStackTrace()
                 }
             })
+        if (movie != null) {
+            showMovie(view)
+        } else {
+            val text = "Проверьте соединение и попробуйте еще раз"
+            val duration = Toast.LENGTH_LONG
+
+            val toast = Toast.makeText(context, text, duration)
+            toast.show()
+        }
         val addToCalendarButton = view.findViewById<ImageButton>(R.id.addToCalendarButton)
         addToCalendarButton.setOnClickListener {
             val addToCalendarFragment = AddToCalendarFragment()
@@ -59,31 +66,31 @@ class MovieFragment : Fragment(R.layout.movie_layout) {
         }
     }
 
-    private fun showMovie(view: View, movie: Movie) {
-        view.findViewById<TextView>(R.id.movieTitle).text = movie.name
-        view.findViewById<TextView>(R.id.movieYear).text = movie.year
-        view.findViewById<TextView>(R.id.description).text = movie.description
+    private fun showMovie(view: View) {
+        view.findViewById<TextView>(R.id.movieTitle).text = movie!!.name
+        view.findViewById<TextView>(R.id.movieYear).text = movie!!.year
+        view.findViewById<TextView>(R.id.description).text = movie!!.description
         var genres = ""
-        movie.genres?.forEach {
+        movie!!.genres?.forEach {
             genres = genres + it.name + ", "
         }
-        if (movie.genres != null && movie.genres.isNotEmpty()) {
+        if (movie!!.genres != null && movie!!.genres!!.isNotEmpty()) {
             genres = genres.substring(0, genres.length - 2)
         }
         view.findViewById<TextView>(R.id.movieGenres).text = genres
         var countries = ""
-        movie.countries?.forEach {
+        movie!!.countries?.forEach {
             countries = countries + it.name + ", "
         }
-        if (movie.countries != null && movie.countries.isNotEmpty()) {
+        if (movie!!.countries != null && movie!!.countries!!.isNotEmpty()) {
             countries = countries.substring(0, countries.length - 2)
         }
         view.findViewById<TextView>(R.id.movieCountries).text = countries
-        view.findViewById<TextView>(R.id.rating).text = movie.rating?.kp.toString()
+        view.findViewById<TextView>(R.id.rating).text = movie!!.rating?.kp.toString()
         val moviePosterView = view.findViewById<ImageView>(R.id.moviePoster)
         Glide
             .with(moviePosterView.context)
-            .load(movie.poster?.url)
+            .load(movie!!.poster?.url)
             .into(moviePosterView)
     }
 }

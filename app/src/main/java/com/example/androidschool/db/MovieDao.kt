@@ -22,4 +22,7 @@ interface MovieDao {
 
     @Query("SELECT * FROM movies WHERE id = :id")
     fun getMovieById(id: Int): List<MovieEntity>?
+//
+//    @Query("SELECT * FROM movies WHERE year = :year")
+//    fun get
 }

@@ -7,9 +7,6 @@ import com.example.androidschool.db.Database
 import com.example.androidschool.db.MovieDao
 import com.example.androidschool.model.dto.Movie
 import com.example.androidschool.model.dto.MoviesList
-import com.example.androidschool.model.dto.Poster
-import com.example.androidschool.model.dto.Rating
-import com.example.androidschool.model.entity.MovieEntity
 import com.example.androidschool.network.NetworkService
 import retrofit2.Call
 import retrofit2.Callback
@@ -49,7 +46,7 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
         if (dbMovies?.isEmpty()!!) {
             getNewMovies()
         } else {
-            val movies = dbMovies.map { entityToMovie(it) }
+            val movies = dbMovies.map { MovieConverter().entityToMovie(it) }
             setMovies(movies)
         }
     }
@@ -84,30 +81,8 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
         movies.value?.let {
             movieDao.deleteMovies()
             movieDao.insertAll(it.map { movie ->
-                movieToEntity(movie)
+                MovieConverter().movieToEntity(movie)
             })
         }
     }
-
-    private fun movieToEntity(movie: Movie): MovieEntity = MovieEntity(
-        movie.id,
-        movie.name,
-        movie.year,
-        movie.description,
-        movie.genres,
-        movie.countries,
-        movie.rating?.kp,
-        movie.poster?.url
-    )
-
-    private fun entityToMovie(entity: MovieEntity): Movie = Movie(
-        entity.id,
-        entity.name,
-        entity.year,
-        entity.description,
-        entity.genres,
-        entity.countries,
-        entity.rating?.let { Rating(it) },
-        entity.poster?.let { Poster(it) }
-    )
 }
