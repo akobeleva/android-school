@@ -16,7 +16,8 @@ import retrofit2.Response
 
 
 class MovieFragment : Fragment(R.layout.movie_layout) {
-    private var  movie: Movie? = null
+    private var movie: Movie? = null
+    private lateinit var moviesService: MoviesService
 
     companion object {
         fun newInstance(movieId: Long): MovieFragment =
@@ -29,19 +30,9 @@ class MovieFragment : Fragment(R.layout.movie_layout) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        moviesService = MoviesService.getInstance(requireActivity().applicationContext)
         val movieId = requireArguments().getLong("movieId")
-        NetworkService.getInstance()
-            ?.getRetrofitServiceApi()
-            ?.getMovie(movieId)
-            ?.enqueue(object : Callback<Movie> {
-                override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
-                    movie = response.body()
-                }
-
-                override fun onFailure(call: Call<Movie>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
+        movie = moviesService.getMovieById(movieId)
         if (movie != null) {
             showMovie(view)
         } else {

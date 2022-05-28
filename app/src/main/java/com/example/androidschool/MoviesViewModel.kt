@@ -20,69 +20,69 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
         movies.value = moviesList
     }
 
-    fun searchMovies(query: String) {
-        NetworkService.getInstance()
-            ?.getRetrofitServiceApi()
-            ?.getMovies(query)
-            ?.enqueue(object : Callback<MoviesList> {
-                override fun onResponse(
-                    call: Call<MoviesList>,
-                    response: Response<MoviesList>
-                ) {
-                    response.body()?.let {
-                        print(it.docs)
-                        setMovies(it.docs)
-                    }
-                }
-
-                override fun onFailure(call: Call<MoviesList>, t: Throwable) {
-                    setMovies(emptyList())
-                }
-            })
-    }
-
-    fun getStartMovies() {
-        val dbMovies = movieDao.getAllMovies()
-        if (dbMovies?.isEmpty()!!) {
-            getNewMovies()
-        } else {
-            val movies = dbMovies.map { MovieConverter().entityToMovie(it) }
-            setMovies(movies)
-        }
-    }
-
-    fun getNewMovies() {
-        val year = (2000..2022).random()
-        getMoviesByYear(year)
-    }
-
-    private fun getMoviesByYear(year: Int) {
-        NetworkService.getInstance()
-            ?.getRetrofitServiceApi()
-            ?.getMoviesByYear(year)
-            ?.enqueue(object : Callback<MoviesList> {
-                override fun onResponse(
-                    call: Call<MoviesList>,
-                    response: Response<MoviesList>
-                ) {
-                    response.body()?.let {
-                        print(it.docs)
-                        setMovies(it.docs)
-                    }
-                }
-
-                override fun onFailure(call: Call<MoviesList>, t: Throwable) {
-                    setMovies(emptyList())
-                }
-            })
-    }
-
-    fun reloadDatabaseMovies() {
-        movies.value?.let {
-            movieDao.deleteMovies()
-            movieDao.insertAll(it.map { movie ->
-                MovieConverter().movieToEntity(movie)
-            })
-        }
-    }
+//    fun searchMovies(query: String) {
+//        NetworkService.getInstance()
+//            ?.getRetrofitServiceApi()
+//            ?.getMovies(query)
+//            ?.enqueue(object : Callback<MoviesList> {
+//                override fun onResponse(
+//                    call: Call<MoviesList>,
+//                    response: Response<MoviesList>
+//                ) {
+//                    response.body()?.let {
+//                        print(it.docs)
+//                        setMovies(it.docs)
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<MoviesList>, t: Throwable) {
+//                    setMovies(emptyList())
+//                }
+//            })
+//    }
+//
+//    fun getStartMovies() {
+//        val dbMovies = movieDao.getAllMovies()
+//        if (dbMovies?.isEmpty()!!) {
+//            getNewMovies()
+//        } else {
+//            val movies = dbMovies.map { MovieConverter().entityToMovie(it) }
+//            setMovies(movies)
+//        }
+//    }
+//
+//    fun getNewMovies() {
+//        val year = (2000..2022).random()
+//        getMoviesByYear(year)
+//    }
+//
+//    private fun getMoviesByYear(year: Int) {
+//        NetworkService.getInstance()
+//            ?.getRetrofitServiceApi()
+//            ?.getMoviesByYear(year)
+//            ?.enqueue(object : Callback<MoviesList> {
+//                override fun onResponse(
+//                    call: Call<MoviesList>,
+//                    response: Response<MoviesList>
+//                ) {
+//                    response.body()?.let {
+//                        print(it.docs)
+//                        setMovies(it.docs)
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<MoviesList>, t: Throwable) {
+//                    setMovies(emptyList())
+//                }
+//            })
+//    }
+//
+//    fun reloadDatabaseMovies() {
+//        movies.value?.let {
+//            movieDao.deleteMovies()
+//            movieDao.insertAll(it.map { movie ->
+//                MovieConverter().movieToEntity(movie)
+//            })
+//        }
+//    }
 }

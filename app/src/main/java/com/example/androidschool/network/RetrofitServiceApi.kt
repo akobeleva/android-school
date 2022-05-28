@@ -14,5 +14,5 @@ interface RetrofitServiceApi {
     fun getMovies(@Query("search") movieName: String): Call<MoviesList>
 
     @GET("/movie?field=year&sortField=rating.kp&sortType=-1&token=RXBRMCW-TZQ4YGV-M59351K-GBC3ZTF")
-    fun getMoviesByYear(@Query("search") year: Int): Call<MoviesList>
+    suspend fun getMoviesByYear(@Query("search") year: Int): MoviesList
 }

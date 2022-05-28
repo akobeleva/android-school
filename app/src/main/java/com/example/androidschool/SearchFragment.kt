@@ -18,7 +18,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        moviesService = MoviesService(requireActivity().applicationContext)
+        moviesService = MoviesService.getInstance(requireActivity().applicationContext)
         findViews(view)
         emptyLayout.visibility = View.VISIBLE
 
@@ -30,9 +30,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     p0?.let {
-//                        val movies = moviesService.searchMovies(it)
-//                        viewModel.setMovies(movies)
-                        viewModel.searchMovies(it)
+                        val movies = moviesService.searchMovies(it)
+                        viewModel.setMovies(movies)
+//                        viewModel.searchMovies(it)
                     }
                     return false
                 }
