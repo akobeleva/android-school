@@ -16,5 +16,6 @@ data class MovieEntity(
     @ColumnInfo(typeAffinity = TEXT) val genres: List<Genre>?,
     @ColumnInfo(typeAffinity = TEXT) val countries: List<Country>?,
     val rating: Float?,
-    val poster: String?
+    val poster: String?,
+    val isActive: Boolean
 )

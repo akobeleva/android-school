@@ -14,7 +14,8 @@ class MovieConverter {
         movie.genres,
         movie.countries,
         movie.rating?.kp,
-        movie.poster?.url
+        movie.poster?.url,
+        true
     )
 
     fun entityToMovie(entity: MovieEntity): Movie = Movie(
