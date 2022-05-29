@@ -22,7 +22,13 @@ interface MovieDao {
 
     @Query("SELECT * FROM movies WHERE id = :id")
     fun getMovieById(id: Int): List<MovieEntity>?
-//
-//    @Query("SELECT * FROM movies WHERE year = :year")
-//    fun get
+
+    @Query("SELECT * FROM movies WHERE year = :year")
+    fun getMoviesByYear(year: String): List<MovieEntity>
+
+    @Query("UPDATE movies SET isActive = :isActive")
+    fun updateNotActiveMovies(isActive: Boolean = false)
+
+    @Query("SELECT * FROM movies WHERE isActive = :isActive")
+    fun getActiveMovies(isActive: Boolean = true): List<MovieEntity>
 }

@@ -3,7 +3,7 @@ package com.example.androidschool
 import android.os.Bundle
 import android.view.View
 import android.widget.CalendarView
-import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import java.util.*
 
@@ -16,7 +16,7 @@ class AddToCalendarFragment : Fragment(R.layout.calendar_layout) {
         val calendarView = view.findViewById<CalendarView>(R.id.calendarView)
         calendarView.minDate = date
 
-        view.findViewById<ImageButton>(R.id.saveButton).setOnClickListener {
+        view.findViewById<ImageView>(R.id.saveButton).setOnClickListener {
             val selectedDate = calendarView.date
         }
     }

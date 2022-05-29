@@ -33,7 +33,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         homeRecyclerView.layoutManager = LinearLayoutManager(context)
         moviesRecyclerAdapter = MoviesRecyclerAdapter(requireActivity())
         homeRecyclerView.adapter = moviesRecyclerAdapter
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -59,7 +58,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             } else {
                 moviesRecyclerAdapter.reload(it)
                 setTitle()
-                viewModel.reloadDatabaseMovies()
             }
         }
     }
