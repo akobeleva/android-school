@@ -6,7 +6,7 @@ import com.example.androidschool.model.dto.Rating
 import com.example.androidschool.model.entity.MovieEntity
 
 class MovieConverter {
-    fun movieToEntity(movie: Movie): MovieEntity = MovieEntity(
+    fun movieToEntity(movie: Movie, isActive : Boolean): MovieEntity = MovieEntity(
         movie.id,
         movie.name,
         movie.year,
@@ -15,7 +15,7 @@ class MovieConverter {
         movie.countries,
         movie.rating?.kp,
         movie.poster?.url,
-        true
+        isActive
     )
 
     fun entityToMovie(entity: MovieEntity): Movie = Movie(

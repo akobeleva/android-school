@@ -31,7 +31,7 @@ class MovieFragment : Fragment(R.layout.movie_layout) {
         viewModel.getMovieById(movieId)
         val addToCalendarButton = view.findViewById<ImageButton>(R.id.addToCalendarButton)
         addToCalendarButton.setOnClickListener {
-            val addToCalendarFragment = AddToCalendarFragment()
+            val addToCalendarFragment = AddToCalendarFragment.newInstance(movieId)
             requireActivity().supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, addToCalendarFragment)
@@ -47,7 +47,7 @@ class MovieFragment : Fragment(R.layout.movie_layout) {
     private fun showMovie(view: View) {
         val movie = viewModel.movie.value
         view.findViewById<TextView>(R.id.movieTitle).text = movie!!.name
-        view.findViewById<TextView>(R.id.movieYear).text = movie.year
+        view.findViewById<TextView>(R.id.date).text = movie.year
         view.findViewById<TextView>(R.id.description).text = movie.description
         var genres = ""
         movie.genres?.forEach {

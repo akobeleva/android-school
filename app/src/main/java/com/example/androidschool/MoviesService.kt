@@ -6,6 +6,7 @@ import com.example.androidschool.db.Database
 import com.example.androidschool.db.MovieDao
 import com.example.androidschool.model.dto.Movie
 import com.example.androidschool.model.dto.MoviesList
+import com.example.androidschool.model.entity.ScheduledMovieEntity
 import com.example.androidschool.network.NetworkService
 import com.example.androidschool.network.RetrofitServiceApi
 import retrofit2.Call
@@ -26,7 +27,7 @@ object MoviesService {
         return movieServiceInstance as MoviesService
     }
 
-    fun getMovieById(movieId: Long, movie: MutableLiveData<Movie>){
+    fun getMovieById(movieId: Long, movie: MutableLiveData<Movie>) {
         retrofitServiceApi
             ?.getMovie(movieId)
             ?.enqueue(object : Callback<Movie> {
@@ -86,7 +87,7 @@ object MoviesService {
                             movies.value = it.docs
                             movieDao?.updateNotActiveMovies()
                             movieDao?.insertAll(it.docs.map { movie ->
-                                MovieConverter().movieToEntity(movie)
+                                MovieConverter().movieToEntity(movie, true)
                             })
                         }
                     }
@@ -97,5 +98,29 @@ object MoviesService {
                     }
                 })
         }
+    }
+
+    fun addScheduledMovie(date: Long, movieId: Long) {
+        retrofitServiceApi
+            ?.getMovie(movieId)
+            ?.enqueue(object : Callback<Movie> {
+                override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
+                    val movie = response.body()
+                    val dbMovie = movieDao?.getMovieById(movieId)
+                    if (dbMovie == null) {
+                        movie?.let { MovieConverter().movieToEntity(it, false) }
+                            ?.let { movieDao?.insertMovie(it) }
+                    }
+                    val dbScheduledMovie = movieDao?.getScheduledMovie(date, movieId)
+                    if (dbScheduledMovie == null) {
+                        val scheduledMovieEntity = ScheduledMovieEntity(date, movieId)
+                        movieDao?.insertScheduledMovie(scheduledMovieEntity)
+                    }
+                }
+
+                override fun onFailure(call: Call<Movie>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
     }
 }

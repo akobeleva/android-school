@@ -18,4 +18,6 @@
     <string name="description">Movie description</string>
     <string name="rating_title">Рейтинг Кинопоиска:</string>
     <string name="rating">rate</string>
+    <string name="date">Date</string>
+    <string name="sheduled_movies">Запланированные фильмы</string>
 </resources>
