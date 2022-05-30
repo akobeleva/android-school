@@ -1,4 +1,4 @@
-package com.example.androidschool.network
+package com.example.androidschool.data.network
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -7,12 +7,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkService {
     private var networkServiceInstance: NetworkService? = null
-    private val BASE_URL = "https://api.kinopoisk.dev"
+    private const val BASE_URL = "https://api.kinopoisk.dev"
     private var retrofit: Retrofit? = null
 
     init {
         val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val client = OkHttpClient.Builder()
             .addInterceptor(interceptor)

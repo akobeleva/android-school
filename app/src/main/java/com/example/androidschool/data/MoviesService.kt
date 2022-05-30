@@ -1,18 +1,20 @@
-package com.example.androidschool
+package com.example.androidschool.data
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import com.example.androidschool.db.Database
-import com.example.androidschool.db.MovieDao
-import com.example.androidschool.db.ScheduledMovieDao
+import com.example.androidschool.data.db.Database
+import com.example.androidschool.data.db.MovieDao
+import com.example.androidschool.data.db.ScheduledMovieDao
+import com.example.androidschool.data.network.NetworkService
+import com.example.androidschool.data.network.RetrofitServiceApi
+import com.example.androidschool.model.MovieConverter
 import com.example.androidschool.model.dto.Movie
 import com.example.androidschool.model.dto.MoviesList
 import com.example.androidschool.model.entity.ScheduledMovieEntity
-import com.example.androidschool.network.NetworkService
-import com.example.androidschool.network.RetrofitServiceApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 object MoviesService {
     private val movieConverter = MovieConverter()
@@ -114,4 +116,24 @@ object MoviesService {
 
     fun addScheduledMovie(date: Long, movieId: Long) =
         scheduledMovieDao?.insertScheduledMovie(ScheduledMovieEntity(date, movieId))
+
+    fun getScheduledMovies(scheduledMoviesLiveData: MutableLiveData<List<Any>>) {
+        val entitiesMap = scheduledMovieDao?.getScheduledMovies()
+        val scheduledMovies = entitiesMap?.keys?.map { movieConverter.entityToScheduledMovie(it) }
+            ?.sortedBy { it.date }
+        val moviesList = entitiesMap?.values?.map {
+            it.map { movieEntity ->
+                movieConverter.entityToMovie(movieEntity)
+            }
+        }?.flatten()
+        val linkedSet = LinkedHashSet<Any>()
+        scheduledMovies?.forEach {
+            val millisInDay = (60 * 60 * 24 * 1000).toLong()
+            val dateOnly = it.date / millisInDay * millisInDay
+            linkedSet.add(Date(dateOnly))
+            val movie = moviesList?.first { movie -> movie.id == it.movieId }!!
+            linkedSet.add(movie)
+        }
+        scheduledMoviesLiveData.value = linkedSet.toList()
+    }
 }

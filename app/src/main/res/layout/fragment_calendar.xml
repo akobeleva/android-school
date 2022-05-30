@@ -13,7 +13,7 @@
         android:layout_marginEnd="12dp"
         android:textColor="@color/white"
         android:textSize="30sp"
-        android:text="@string/sheduled_movies"
+        android:text="@string/scheduled_movies"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

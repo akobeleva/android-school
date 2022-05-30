@@ -19,5 +19,6 @@
     <string name="rating_title">Рейтинг Кинопоиска:</string>
     <string name="rating">rate</string>
     <string name="date">Date</string>
-    <string name="sheduled_movies">Запланированные фильмы</string>
+    <string name="scheduled_movies">Запланированы</string>
+    <string name="scheduled_date">Scheduled date</string>
 </resources>

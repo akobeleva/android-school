@@ -3,6 +3,7 @@ package com.example.androidschool
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.example.androidschool.data.MoviesService
 import com.example.androidschool.model.dto.Movie
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {

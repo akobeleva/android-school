@@ -1,4 +1,4 @@
-package com.example.androidschool.network
+package com.example.androidschool.data.network
 
 import com.example.androidschool.model.dto.Movie
 import com.example.androidschool.model.dto.MoviesList

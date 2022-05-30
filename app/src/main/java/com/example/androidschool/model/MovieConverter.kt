@@ -1,15 +1,17 @@
-package com.example.androidschool
+package com.example.androidschool.model
 
 import com.example.androidschool.model.dto.Movie
 import com.example.androidschool.model.dto.Poster
 import com.example.androidschool.model.dto.Rating
+import com.example.androidschool.model.dto.ScheduledMovie
 import com.example.androidschool.model.entity.MovieEntity
+import com.example.androidschool.model.entity.ScheduledMovieEntity
 
 class MovieConverter {
 
     fun movieToEntity(movie: Movie) = movieToEntity(movie, false)
 
-    fun movieToEntity(movie: Movie, isActive : Boolean): MovieEntity = MovieEntity(
+    fun movieToEntity(movie: Movie, isActive: Boolean): MovieEntity = MovieEntity(
         movie.id,
         movie.name,
         movie.year,
@@ -30,5 +32,11 @@ class MovieConverter {
         entity.countries,
         entity.rating?.let { Rating(it) },
         entity.poster?.let { Poster(it) }
+    )
+
+    fun entityToScheduledMovie(entity: ScheduledMovieEntity): ScheduledMovie = ScheduledMovie(
+        entity.id,
+        entity.date,
+        entity.movieId,
     )
 }
