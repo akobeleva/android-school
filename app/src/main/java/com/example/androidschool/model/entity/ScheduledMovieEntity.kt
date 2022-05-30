@@ -14,7 +14,9 @@ import androidx.room.PrimaryKey
         )]
 )
 data class ScheduledMovieEntity(
-    @PrimaryKey(autoGenerate = true)
     var date: Long,
     var movieId: Long
-)
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0
+}

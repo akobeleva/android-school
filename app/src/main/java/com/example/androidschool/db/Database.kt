@@ -8,10 +8,11 @@ import com.example.androidschool.TypeConverter
 import com.example.androidschool.model.entity.MovieEntity
 import com.example.androidschool.model.entity.ScheduledMovieEntity
 
-@androidx.room.Database(entities = [MovieEntity::class, ScheduledMovieEntity::class], version = 7)
+@androidx.room.Database(entities = [MovieEntity::class, ScheduledMovieEntity::class], version = 8)
 @TypeConverters(TypeConverter::class)
 abstract class Database : RoomDatabase() {
     abstract fun movieDao(): MovieDao
+    abstract fun scheduledMovieDao(): ScheduledMovieDao
 
     companion object {
         private var INSTANCE: Database? = null

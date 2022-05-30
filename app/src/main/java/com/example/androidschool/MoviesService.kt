@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.androidschool.db.Database
 import com.example.androidschool.db.MovieDao
+import com.example.androidschool.db.ScheduledMovieDao
 import com.example.androidschool.model.dto.Movie
 import com.example.androidschool.model.dto.MoviesList
 import com.example.androidschool.model.entity.ScheduledMovieEntity
@@ -14,31 +15,42 @@ import retrofit2.Callback
 import retrofit2.Response
 
 object MoviesService {
+    private val movieConverter = MovieConverter()
     private var movieServiceInstance: MoviesService? = null
     private var movieDao: MovieDao? = null
+    private var scheduledMovieDao: ScheduledMovieDao? = null
     private var retrofitServiceApi: RetrofitServiceApi? = null
 
     fun getInstance(context: Context): MoviesService {
         if (movieServiceInstance == null) {
             movieServiceInstance = MoviesService
             movieDao = Database.getDatabase(context).movieDao()
+            scheduledMovieDao = Database.getDatabase(context).scheduledMovieDao()
             retrofitServiceApi = NetworkService.getInstance()?.getRetrofitServiceApi()
         }
         return movieServiceInstance as MoviesService
     }
 
-    fun getMovieById(movieId: Long, movie: MutableLiveData<Movie>) {
-        retrofitServiceApi
-            ?.getMovie(movieId)
-            ?.enqueue(object : Callback<Movie> {
-                override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
-                    movie.value = response.body()
-                }
+    private fun getMovieByIdFromDb(movieId: Long) = movieDao?.getMovieById(movieId)
 
-                override fun onFailure(call: Call<Movie>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
+    fun getMovieById(movieId: Long, movieLiveData: MutableLiveData<Movie>) {
+        val dbMovie = getMovieByIdFromDb(movieId)
+        if (dbMovie != null && !(dbMovie.genres.isNullOrEmpty() || dbMovie.countries.isNullOrEmpty())) {
+            movieLiveData.value = movieConverter.entityToMovie(dbMovie)
+        } else {
+            retrofitServiceApi
+                ?.getMovie(movieId)
+                ?.enqueue(object : Callback<Movie> {
+                    override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
+                        movieDao?.insertMovie(movieConverter.movieToEntity(response.body()!!))
+                        movieLiveData.value = response.body()
+                    }
+
+                    override fun onFailure(call: Call<Movie>, t: Throwable) {
+                        t.printStackTrace()
+                    }
+                })
+        }
     }
 
     fun searchMovies(query: String, movies: MutableLiveData<List<Movie>>) {
@@ -100,27 +112,6 @@ object MoviesService {
         }
     }
 
-    fun addScheduledMovie(date: Long, movieId: Long) {
-        retrofitServiceApi
-            ?.getMovie(movieId)
-            ?.enqueue(object : Callback<Movie> {
-                override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
-                    val movie = response.body()
-                    val dbMovie = movieDao?.getMovieById(movieId)
-                    if (dbMovie == null) {
-                        movie?.let { MovieConverter().movieToEntity(it, false) }
-                            ?.let { movieDao?.insertMovie(it) }
-                    }
-                    val dbScheduledMovie = movieDao?.getScheduledMovie(date, movieId)
-                    if (dbScheduledMovie == null) {
-                        val scheduledMovieEntity = ScheduledMovieEntity(date, movieId)
-                        movieDao?.insertScheduledMovie(scheduledMovieEntity)
-                    }
-                }
-
-                override fun onFailure(call: Call<Movie>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
-    }
+    fun addScheduledMovie(date: Long, movieId: Long) =
+        scheduledMovieDao?.insertScheduledMovie(ScheduledMovieEntity(date, movieId))
 }

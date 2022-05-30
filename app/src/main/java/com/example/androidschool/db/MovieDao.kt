@@ -3,9 +3,9 @@ package com.example.androidschool.db
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.example.androidschool.model.entity.MovieEntity
-import com.example.androidschool.model.entity.ScheduledMovieEntity
 
 @Dao
 interface MovieDao {
@@ -33,15 +33,6 @@ interface MovieDao {
     @Query("SELECT * FROM movies WHERE isActive = :isActive")
     fun getActiveMovies(isActive: Boolean = true): List<MovieEntity>
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     fun insertMovie(movie: MovieEntity)
-
-    @Insert
-    fun insertScheduledMovie(scheduledMovieEntity: ScheduledMovieEntity)
-
-    @Query("SELECT * FROM scheduled_movies WHERE date = :date AND movieId = :movieId")
-    fun getScheduledMovie(date: Long, movieId: Long): ScheduledMovieEntity?
-
-    @Query("SELECT date name  FROM scheduled_movies JOIN movies ON scheduled_movies.movieId = movies.id")
-    fun getScheduledMovies()
 }
