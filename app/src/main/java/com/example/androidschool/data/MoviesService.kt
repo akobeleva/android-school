@@ -2,6 +2,7 @@ package com.example.androidschool.data
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.example.androidschool.BuildConfig
 import com.example.androidschool.data.db.Database
 import com.example.androidschool.data.db.MovieDao
 import com.example.androidschool.data.db.ScheduledMovieDao
@@ -41,7 +42,7 @@ object MoviesService {
             movieLiveData.value = movieConverter.entityToMovie(dbMovie)
         } else {
             retrofitServiceApi
-                ?.getMovie(movieId)
+                ?.getMovie(movieId, BuildConfig.API_KEY)
                 ?.enqueue(object : Callback<Movie> {
                     override fun onResponse(call: Call<Movie?>, response: Response<Movie?>) {
                         movieDao?.insertMovie(movieConverter.movieToEntity(response.body()!!))
@@ -57,7 +58,7 @@ object MoviesService {
 
     fun searchMovies(query: String, movies: MutableLiveData<List<Movie>>) {
         retrofitServiceApi
-            ?.getMovies(query)
+            ?.getMovies(query, BuildConfig.API_KEY)
             ?.enqueue(object : Callback<MoviesList> {
                 override fun onResponse(
                     call: Call<MoviesList>,
@@ -91,7 +92,7 @@ object MoviesService {
             movies.value = dbMovies.map { MovieConverter().entityToMovie(it) }
         } else {
             retrofitServiceApi
-                ?.getMoviesByYear(year)
+                ?.getMoviesByYear(year, BuildConfig.API_KEY)
                 ?.enqueue(object : Callback<MoviesList> {
                     override fun onResponse(
                         call: Call<MoviesList>,
