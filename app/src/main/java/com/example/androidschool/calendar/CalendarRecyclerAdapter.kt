@@ -6,16 +6,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.androidschool.MovieFragment
 import com.example.androidschool.R
 import com.example.androidschool.model.dto.Movie
 import java.text.DateFormat
 import java.util.*
 
-class CalendarRecyclerAdapter(private val fragmentActivity: FragmentActivity) :
+class CalendarRecyclerAdapter(private val listener: OnMovieListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_DATE = 1
     private val TYPE_MOVIE = 2
@@ -63,17 +61,8 @@ class CalendarRecyclerAdapter(private val fragmentActivity: FragmentActivity) :
                 .with(holder.movieImageView.context)
                 .load(movie.poster?.url)
                 .into(holder.movieImageView)
-            holder.movieCardView.setOnClickListener { clickListener(movie) }
+            holder.movieCardView.setOnClickListener { listener.onClick(movie.id) }
         }
-    }
-
-    private fun clickListener(movie: Movie) {
-        val movieFragment = MovieFragment.newInstance(movie.id)
-        fragmentActivity.supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, movieFragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     override fun getItemCount(): Int {
@@ -92,5 +81,9 @@ class CalendarRecyclerAdapter(private val fragmentActivity: FragmentActivity) :
         dataList.clear()
         data.let { dataList.addAll(it) }
         notifyDataSetChanged()
+    }
+
+    interface OnMovieListener {
+        fun onClick(movieId: Long)
     }
 }
