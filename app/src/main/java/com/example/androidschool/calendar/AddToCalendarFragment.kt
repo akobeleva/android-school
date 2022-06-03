@@ -7,7 +7,8 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.example.androidschool.R
 import com.example.androidschool.data.MoviesService
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 
 class AddToCalendarFragment : Fragment(R.layout.calendar_layout) {
@@ -35,7 +36,7 @@ class AddToCalendarFragment : Fragment(R.layout.calendar_layout) {
         view.findViewById<ImageView>(R.id.saveButton).setOnClickListener {
             val movieId = arguments?.getLong("movieId")
             if (movieId != null) {
-                MoviesService.addScheduledMovie(date, movieId)
+                moviesService.addScheduledMovie(date, movieId)
             }
             requireActivity().supportFragmentManager.popBackStack()
         }

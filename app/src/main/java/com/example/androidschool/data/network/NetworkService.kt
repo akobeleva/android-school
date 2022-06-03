@@ -5,33 +5,24 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object NetworkService {
-    private var networkServiceInstance: NetworkService? = null
-    private const val BASE_URL = "https://api.kinopoisk.dev"
-    private var retrofit: Retrofit? = null
+class NetworkService {
+    companion object {
+        private val RETROFIT_API_INSTANCE: RetrofitServiceApi by lazy {
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
 
-    init {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
+            val client = OkHttpClient.Builder()
+                .addInterceptor(interceptor)
 
-        val client = OkHttpClient.Builder()
-            .addInterceptor(interceptor)
-
-        retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client.build())
-            .build()
-    }
-
-    fun getInstance(): NetworkService? {
-        if (networkServiceInstance == null) {
-            networkServiceInstance = NetworkService
+            return@lazy Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client.build())
+                .build()
+                .create(RetrofitServiceApi::class.java)
         }
-        return networkServiceInstance
-    }
 
-    fun getRetrofitServiceApi(): RetrofitServiceApi? {
-        return retrofit?.create(RetrofitServiceApi::class.java)
+        fun getRetrofitServiceApi() = RETROFIT_API_INSTANCE
+        private const val BASE_URL = "https://api.kinopoisk.dev"
     }
 }
