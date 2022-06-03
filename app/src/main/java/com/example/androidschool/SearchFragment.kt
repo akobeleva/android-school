@@ -15,6 +15,17 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private lateinit var emptyLayout: ConstraintLayout
     private lateinit var moviesLayout: ConstraintLayout
 
+    private val listener = object : MoviesRecyclerAdapter.OnMovieListener {
+        override fun onClick(movieId: Long) {
+            val movieFragment = MovieFragment.newInstance(movieId)
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, movieFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         findViews(view)
@@ -35,7 +46,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             })
         val recyclerView = view.findViewById<RecyclerView>(R.id.moviesRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        moviesRecyclerAdapter = MoviesRecyclerAdapter(requireActivity())
+        moviesRecyclerAdapter = MoviesRecyclerAdapter(listener)
         recyclerView.adapter = moviesRecyclerAdapter
 
         subscribeToViewModel()

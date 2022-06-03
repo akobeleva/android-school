@@ -18,6 +18,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var homeTitle: TextView
     private lateinit var homeRecyclerView: RecyclerView
 
+    private val listener = object : MoviesRecyclerAdapter.OnMovieListener {
+        override fun onClick(movieId: Long) {
+            val movieFragment = MovieFragment.newInstance(movieId)
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, movieFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         findViews(view)
@@ -31,7 +42,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         homeRecyclerView.layoutManager = LinearLayoutManager(context)
-        moviesRecyclerAdapter = MoviesRecyclerAdapter(requireActivity())
+        moviesRecyclerAdapter = MoviesRecyclerAdapter(listener)
         homeRecyclerView.adapter = moviesRecyclerAdapter
     }
 

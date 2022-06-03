@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.androidschool.model.dto.Movie
 
-class MoviesRecyclerAdapter(private val fragmentActivity: FragmentActivity) :
+class MoviesRecyclerAdapter(private val listener: OnMovieListener) :
     RecyclerView.Adapter<MoviesRecyclerAdapter.MovieViewHolder>() {
     private val moviesList = mutableListOf<Movie>()
 
@@ -38,16 +37,7 @@ class MoviesRecyclerAdapter(private val fragmentActivity: FragmentActivity) :
             .with(holder.movieImageView.context)
             .load(movie.poster?.url)
             .into(holder.movieImageView)
-        holder.movieCardView.setOnClickListener { clickListener(movie) }
-    }
-
-    private fun clickListener(movie: Movie) {
-        val movieFragment = MovieFragment.newInstance(movie.id)
-        fragmentActivity.supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, movieFragment)
-            .addToBackStack(null)
-            .commit()
+        holder.movieCardView.setOnClickListener { listener.onClick(movie.id) }
     }
 
     override fun getItemCount(): Int {
@@ -58,5 +48,9 @@ class MoviesRecyclerAdapter(private val fragmentActivity: FragmentActivity) :
         moviesList.clear()
         data?.let { moviesList.addAll(it) }
         notifyDataSetChanged()
+    }
+
+    interface OnMovieListener {
+        fun onClick(movieId: Long)
     }
 }
