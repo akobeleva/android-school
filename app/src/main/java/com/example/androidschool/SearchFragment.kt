@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 class SearchFragment : Fragment(R.layout.fragment_search) {
     private val viewModel: MoviesViewModel by viewModels()
     private lateinit var moviesRecyclerAdapter: MoviesRecyclerAdapter
-    private lateinit var emptyLayout: ConstraintLayout
-    private lateinit var moviesLayout: ConstraintLayout
+    private var emptyLayout: ConstraintLayout? = null
+    private var moviesLayout: ConstraintLayout? = null
 
     private val listener = object : MoviesRecyclerAdapter.OnMovieListener {
         override fun onClick(movieId: Long) {
@@ -29,7 +29,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         findViews(view)
-        emptyLayout.visibility = View.VISIBLE
+        emptyLayout?.visibility = View.VISIBLE
 
         view.findViewById<SearchView>(R.id.searchView)
             .setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -61,12 +61,18 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         viewModel.movies.observe(viewLifecycleOwner) {
             moviesRecyclerAdapter.reload(it)
             if (it.isEmpty()) {
-                emptyLayout.visibility = View.VISIBLE
-                moviesLayout.visibility = View.GONE
+                emptyLayout?.visibility = View.VISIBLE
+                moviesLayout?.visibility = View.GONE
             } else {
-                emptyLayout.visibility = View.GONE
-                moviesLayout.visibility = View.VISIBLE
+                emptyLayout?.visibility = View.GONE
+                moviesLayout?.visibility = View.VISIBLE
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        emptyLayout = null
+        moviesLayout = null
     }
 }

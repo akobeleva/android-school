@@ -14,9 +14,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel: MoviesViewModel by viewModels()
     private lateinit var moviesRecyclerAdapter: MoviesRecyclerAdapter
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var homeTitle: TextView
-    private lateinit var homeRecyclerView: RecyclerView
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var homeTitle: TextView? = null
+    private var homeRecyclerView: RecyclerView? = null
 
     private val listener = object : MoviesRecyclerAdapter.OnMovieListener {
         override fun onClick(movieId: Long) {
@@ -36,20 +36,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         viewModel.getStartMovies()
 
-        swipeRefreshLayout.setOnRefreshListener {
+        swipeRefreshLayout?.setOnRefreshListener {
             viewModel.getNewMovies()
-            swipeRefreshLayout.isRefreshing = false
+            swipeRefreshLayout?.isRefreshing = false
         }
 
-        homeRecyclerView.layoutManager = LinearLayoutManager(context)
+        homeRecyclerView?.layoutManager = LinearLayoutManager(context)
         moviesRecyclerAdapter = MoviesRecyclerAdapter(listener)
-        homeRecyclerView.adapter = moviesRecyclerAdapter
+        homeRecyclerView?.adapter = moviesRecyclerAdapter
     }
 
     @SuppressLint("SetTextI18n")
     private fun setTitle() {
         val year = viewModel.movies.value?.get(0)?.year
-        homeTitle.text = "Топ фильмов за $year год"
+        homeTitle?.text = "Топ фильмов за $year год"
     }
 
     private fun findViews(view: View) {
@@ -71,5 +71,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 setTitle()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        swipeRefreshLayout = null
+        homeTitle = null
+        homeRecyclerView = null
     }
 }
