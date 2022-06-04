@@ -22,8 +22,14 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
 
     fun getStartMovies() {
         viewModelScope.launch {
-            val result = moviesService.getStartMovies()
-            movies.postValue(result)
+            moviesService.getLocalActiveMovies().takeIf {
+                movies.value == null
+            }?.let {
+                movies.postValue(it)
+            } ?: println("discard changes from db")
+        }
+        viewModelScope.launch {
+            movies.postValue(moviesService.getNewMovies())
         }
     }
 

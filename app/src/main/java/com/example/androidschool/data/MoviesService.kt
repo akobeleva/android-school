@@ -44,10 +44,12 @@ class MoviesService private constructor(context: Context) {
 
     suspend fun searchMovies(query: String) = networkMoviesService.getMovies(query)
 
-    suspend fun getStartMovies() = movieDao.getActiveMovies()
-        .takeIf { it.isNotEmpty() }
-        ?.map { movieConverter.entityToMovie(it) }
-        ?: listOf()
+    suspend fun getLocalActiveMovies(): List<Movie> {
+        return movieDao.getActiveMovies()
+            .takeIf { it.isNotEmpty() }
+            ?.map { movieConverter.entityToMovie(it) }
+            ?: listOf()
+    }
 
     suspend fun getNewMovies(): List<Movie> {
         val year = (START_YEAR..END_YEAR).random()
