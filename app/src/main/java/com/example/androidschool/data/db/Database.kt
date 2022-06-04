@@ -25,7 +25,6 @@ abstract class Database : RoomDatabase() {
             )
                 .addTypeConverter(TypeConverter())
                 .fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
                 .build()
             return INSTANCE as Database
         }

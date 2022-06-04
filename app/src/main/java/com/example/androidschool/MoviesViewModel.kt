@@ -3,26 +3,34 @@ package com.example.androidschool
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.androidschool.data.MoviesService
 import com.example.androidschool.model.dto.Movie
+import kotlinx.coroutines.launch
 
 class MoviesViewModel(application: Application) : AndroidViewModel(application) {
     var movies: MutableLiveData<List<Movie>> = MutableLiveData()
-    private var moviesService : MoviesService = MoviesService.getInstance(application.applicationContext)
-
-    fun setMovies(moviesList: List<Movie>) {
-        movies.value = moviesList
-    }
+    private var moviesService: MoviesService =
+        MoviesService.getInstance(application.applicationContext)
 
     fun searchMovies(query: String) {
-        moviesService.searchMovies(query, movies)
+        viewModelScope.launch {
+            val result = moviesService.searchMovies(query)
+            movies.postValue(result)
+        }
     }
 
     fun getStartMovies() {
-        moviesService.getStartMovies(movies)
+        viewModelScope.launch {
+            val result = moviesService.getStartMovies()
+            movies.postValue(result)
+        }
     }
 
     fun getNewMovies() {
-        moviesService.getNewMovies(movies)
+        viewModelScope.launch {
+            val result = moviesService.getNewMovies()
+            movies.postValue(result)
+        }
     }
 }

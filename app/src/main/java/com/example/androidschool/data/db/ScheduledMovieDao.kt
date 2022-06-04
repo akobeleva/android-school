@@ -10,11 +10,8 @@ import com.example.androidschool.model.entity.ScheduledMovieEntity
 @Dao
 interface ScheduledMovieDao {
     @Insert(onConflict = REPLACE)
-    fun insertScheduledMovie(scheduledMovieEntity: ScheduledMovieEntity)
-
-    @Query("SELECT * FROM scheduled_movies WHERE date = :date AND movieId = :movieId")
-    fun getScheduledMovie(date: Long, movieId: Long): ScheduledMovieEntity?
+    suspend fun insertScheduledMovie(scheduledMovieEntity: ScheduledMovieEntity)
 
     @Query("SELECT * FROM scheduled_movies JOIN movies ON scheduled_movies.movieId = movies.id")
-    fun getScheduledMovies(): Map<ScheduledMovieEntity, List<MovieEntity>>
+    suspend fun getScheduledMovies(): Map<ScheduledMovieEntity, List<MovieEntity>>
 }

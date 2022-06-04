@@ -1,7 +1,6 @@
 package com.example.androidschool.data
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import com.example.androidschool.data.db.Database
 import com.example.androidschool.data.db.MovieDao
 import com.example.androidschool.data.db.ScheduledMovieDao
@@ -32,56 +31,44 @@ class MoviesService private constructor(context: Context) {
         }
     }
 
-    fun getMovieById(movieId: Long, movieLiveData: MutableLiveData<Movie>) {
-        movieDao.getMovieById(movieId)?.let {
-            if (!(it.genres.isNullOrEmpty() || it.countries.isNullOrEmpty())) {
-                movieLiveData.value = movieConverter.entityToMovie(it)
-            }
-        } ?: networkMoviesService.getMovie(movieId) { resultMovie ->
-            movieLiveData.value = resultMovie
-            movieDao.insertMovie(movieConverter.movieToEntity(resultMovie))
-        }
+    suspend fun getMovieById(movieId: Long): Movie {
+        return movieDao.getMovieById(movieId)
+            ?.takeUnless { it.genres.isNullOrEmpty() || it.countries.isNullOrEmpty() }
+            ?.let { movieConverter.entityToMovie(it) }
+            ?: networkMoviesService.getMovie(movieId)
+                ?.let {
+                    movieDao.insertMovie(movieConverter.movieToEntity(it))
+                    it
+                }!!
     }
 
-    fun searchMovies(query: String, movies: MutableLiveData<List<Movie>>) {
-        networkMoviesService.getMovies(query) { result ->
-            movies.value = result.docs
-        }
-    }
+    suspend fun searchMovies(query: String) = networkMoviesService.getMovies(query) ?: listOf()
 
-    fun getStartMovies(movies: MutableLiveData<List<Movie>>) {
-        val dbMovies = movieDao.getActiveMovies()
-        if (dbMovies.isEmpty()) {
-            getNewMovies(movies)
-        } else {
-            movies.value = dbMovies.map { movieConverter.entityToMovie(it) }
-        }
-    }
+    suspend fun getStartMovies() = movieDao.getActiveMovies()
+        .takeIf { it.isNotEmpty() }
+        ?.map { movieConverter.entityToMovie(it) }
+        ?: listOf()
 
-    fun getNewMovies(movies: MutableLiveData<List<Movie>>) {
+    suspend fun getNewMovies(): List<Movie> {
         val year = (START_YEAR..END_YEAR).random()
 
-        val dbMovies = movieDao.getMoviesByYear(year.toString())
-        if (dbMovies.isNotEmpty()) {
-            movies.value = dbMovies.map { movieConverter.entityToMovie(it) }
-        } else {
-            networkMoviesService.getMoviesByYear(year) { result ->
-                movies.value = result.docs
-                if (result.docs.isNotEmpty()) {
-                    movies.value = result.docs
+        return movieDao.getMoviesByYear(year.toString()).takeIf { it.isNotEmpty() }
+            ?.map { movieConverter.entityToMovie(it) }
+            ?.toList()
+            ?: networkMoviesService.getMoviesByYear(year)?.docs?.takeIf { it.isNotEmpty() }
+                ?.let { movies ->
                     movieDao.updateNotActiveMovies()
-                    movieDao.insertAll(result.docs.map { movie ->
+                    movieDao.insertAll(movies.map { movie ->
                         movieConverter.movieToEntity(movie, true)
                     })
-                }
-            }
-        }
+                    movies
+                } ?: listOf()
     }
 
-    fun addScheduledMovie(date: Long, movieId: Long) =
+    suspend fun addScheduledMovie(date: Long, movieId: Long) =
         scheduledMovieDao.insertScheduledMovie(ScheduledMovieEntity(date, movieId))
 
-    fun getScheduledMovies(scheduledMoviesLiveData: MutableLiveData<List<Any>>) {
+    suspend fun getScheduledMovies(): List<Any> {
         val entitiesMap = scheduledMovieDao.getScheduledMovies()
         val scheduledMovies = entitiesMap.keys.map { movieConverter.entityToScheduledMovie(it) }
             .sortedBy { it.date }
@@ -97,6 +84,6 @@ class MoviesService private constructor(context: Context) {
             val movie = moviesList.first { movie -> movie.id == it.movieId }
             linkedSet.add(movie)
         }
-        scheduledMoviesLiveData.value = linkedSet.toList()
+        return linkedSet.toList()
     }
 }
