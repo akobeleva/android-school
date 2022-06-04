@@ -31,7 +31,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         findViews(view)
         emptyLayout?.visibility = View.VISIBLE
 
-        view.findViewById<SearchView>(R.id.searchView)
+        val searchView =  view.findViewById<SearchView>(R.id.searchView)
+        searchView
             .setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(p0: String?): Boolean {
                     return false
@@ -44,6 +45,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     return false
                 }
             })
+        searchView.isIconified = false
+        searchView.clearFocus()
         val recyclerView = view.findViewById<RecyclerView>(R.id.moviesRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
         moviesRecyclerAdapter = MoviesRecyclerAdapter(listener)
