@@ -9,7 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
-    var movie: MutableLiveData<Movie> = MutableLiveData()
+    var movie: MutableLiveData<Movie?> = MutableLiveData()
     private var moviesService: MoviesService =
         MoviesService.getInstance(application.applicationContext)
 

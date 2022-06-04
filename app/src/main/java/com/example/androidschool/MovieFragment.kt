@@ -6,10 +6,12 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.androidschool.calendar.AddToCalendarFragment
+import pl.droidsonroids.gif.GifImageView
 
 
 class MovieFragment : Fragment(R.layout.movie_layout) {
@@ -79,6 +81,10 @@ class MovieFragment : Fragment(R.layout.movie_layout) {
             if (it != null) {
                 showMovie(view)
             } else {
+                view.findViewById<ConstraintLayout>(R.id.movieInfo).visibility = View.INVISIBLE
+                view.findViewById<ImageButton>(R.id.addToCalendarButton).visibility = View.INVISIBLE
+                view.findViewById<TextView>(R.id.description).visibility = View.INVISIBLE
+                view.findViewById<GifImageView>(R.id.gifNoConnection).visibility = View.VISIBLE
                 val text = "Проверьте соединение и попробуйте еще раз"
                 val duration = Toast.LENGTH_LONG
 

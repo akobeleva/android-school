@@ -31,7 +31,7 @@ class MoviesService private constructor(context: Context) {
         }
     }
 
-    suspend fun getMovieById(movieId: Long): Movie {
+    suspend fun getMovieById(movieId: Long): Movie? {
         return movieDao.getMovieById(movieId)
             ?.takeUnless { it.genres.isNullOrEmpty() || it.countries.isNullOrEmpty() }
             ?.let { movieConverter.entityToMovie(it) }
@@ -39,10 +39,10 @@ class MoviesService private constructor(context: Context) {
                 ?.let {
                     movieDao.insertMovie(movieConverter.movieToEntity(it))
                     it
-                }!!
+                }
     }
 
-    suspend fun searchMovies(query: String) = networkMoviesService.getMovies(query) ?: listOf()
+    suspend fun searchMovies(query: String) = networkMoviesService.getMovies(query)
 
     suspend fun getStartMovies() = movieDao.getActiveMovies()
         .takeIf { it.isNotEmpty() }
@@ -55,7 +55,7 @@ class MoviesService private constructor(context: Context) {
         return movieDao.getMoviesByYear(year.toString()).takeIf { it.isNotEmpty() }
             ?.map { movieConverter.entityToMovie(it) }
             ?.toList()
-            ?: networkMoviesService.getMoviesByYear(year)?.docs?.takeIf { it.isNotEmpty() }
+            ?: networkMoviesService.getMoviesByYear(year).docs.takeIf { it.isNotEmpty() }
                 ?.let { movies ->
                     movieDao.updateNotActiveMovies()
                     movieDao.insertAll(movies.map { movie ->

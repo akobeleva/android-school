@@ -16,7 +16,7 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
     fun searchMovies(query: String) {
         viewModelScope.launch {
             val result = moviesService.searchMovies(query)
-            movies.postValue(result)
+            movies.postValue(result.docs)
         }
     }
 
