@@ -13,6 +13,7 @@ class StartActivity : AppCompatActivity() {
         findViewById<View>(R.id.startLayout).setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }
